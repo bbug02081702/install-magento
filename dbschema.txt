@@ -1,0 +1,593 @@
+php bin/magento setup:db-declaration:generate-whitelist --module-name=Meetanshi_Extension
+php bin/magento setup:upgrade
+php bin/magento setup:static-content:deploy -f
+php -d memory_limit=-1 bin/magento setup:static-content:deploy -f
+php -d memory_limit=3G ./bin/magento setup:static-content:deploy --force ja_JP en_US 
+php bin/magento cache:flush
+php bin/magento cache:clean
+php bin/magento deploy:mode:set developer
+php bin/magento module:enable-all
+php bin/magento setup:di:compile
+php bin/magento indexer:reindex
+hp bin/magento catalog:image:resize
+php bin/magento module:disable Magento_TwoFactorAuth
+https://webkul.com/blog/magento2-marketplace-catalog-translation/
+php bin/magento s:up && php bin/magento s:d:c && php bin/magento s:s:d -f ja_JP && php bin/magento c:f
+php bin/magento sampledata:deploy && php bin/magento indexer:reindex && php bin/magento se:up && php bin/magento se:s:d -f && php bin/magento c:f
+memory_limit = 768M
+max_execution_time = 18000
+---add in php.ini
+[Xdebug]
+zend_extension="C\xampp\php\ext\php_exdebug.dll"
+xdebug.remote_enable = 1
+xdebug.remote_autostart
+---
+php bin/magento i18n:collect-phrases --output="app/design/frontend/TestTranslate/testsl/i18n/ja_JP.csv" app/design/frontend/TestTranslate/testsl
+
+------user magento------------------------
+Public Key: 03bbf740cbcaff075e60f4896ac03455 
+Private Key: 127c305658a3fae8c2575bd3a05782a2 
+
+----------------------------------------
+
+-----------install magento--------------
+composer create-project --repository-url=https://repo.magento.com/ magento/project-community-edition=2.4.4 magento2
+
+
+php bin/magento setup:install --base-url="http://hellok59.com/" --db-host="localhost" --db-name="magento2" --db-user="root" --db-password="" 
+--admin-firstname="admin" --admin-lastname="admin" --admin-email="user@example.com" --admin-user="admin" --admin-password="Admin@123456" --language="en_US" 
+--currency="USD" --timezone="America/Chicago" --use-rewrites="1" --backend-frontname="admin" 
+
+bcmath	ctype	curl	dom
+gd	hash	iconv	intl
+mbstring	openssl	pdo_mysql	simplexml
+soap	xsl	zip	ext-sockets
+
+
+--------fix error ----------------------------------------------------
+
+Go to: D:\xampp8.1\htdocs\magento2\vendor\magento\framework\View\Element\Template\File
+
+Edit Validator.php using a text editor and find this line:
+
+instead of
+
+strpos($realPath, $directory)
+use
+
+strpos($path, $directory)
+Save the File.
+
+Then,
+
+Open up app/etc/di.xml in the editor,
+
+– Find the path “Magento\Framework\App\View\Asset\MaterializationStrategy\Symlink”
+ and replace to “Magento\Framework\App\View\Asset\MaterializationStrategy\Copy”
+
+-------------------------
+
+
+------------fix error validateURLScheme---------
+
+Find validateURLScheme function in vendor\magento\framework\Image\Adapter\Gd2.php file. at line 92. Replace function with this:
+
+private function validateURLScheme(string $filename) : bool
+{
+          $allowed_schemes = ['ftp', 'ftps', 'http', 'https'];
+          $url = parse_url($filename);
+          if ($url && isset($url['scheme']) && !in_array($url['scheme'], $allowed_schemes) && !file_exists($filename)) {
+              return false;
+          }
+
+          return true;   
+}
+
+----------------
+
+php bin/magento admin:user:create
+クオン
+
+<VirtualHost *:80>
+    DocumentRoot "C:/xampp/htdocs/testmagento/pub"
+    ServerName ichiisoftmagento.com
+</VirtualHost>
+
+<VirtualHost *:80>
+    DocumentRoot "C:/xampp/htdocs"
+    ServerName localhost
+</VirtualHost>
+https://store.webkul.com/magento2-multi-vendor-marketplace.html
+php -d memory_limit=3G ./bin/magento setup:static-content:deploy --force ja_JP en_US 
+composer create-project --repository-url=https://repo.magento.com/ magento/project-community-edition=2.3
+composer install --ignore-platform-reqs
+Mô hình eva trong magento 2: entity-value-attribute:
++ addAttributeToSelect();
+
+
+
+--- command line for laravel:
+   php artisan key:generate
+   php artisan cache:clear
+   php artisan config:clear
+   composer dump-autoload
+
+
+$realPath = str_replace('\\', '/', $this->fileDriver->getRealPath($path));
+-- magento\vendor\magento\framework\View\Element\Template\File
+
+'entity_id','name','gender','dob','address','created_at','updated_at'
+  public function execute()
+    {
+        $student = $this->_objectManager->create(\Taimagento\Training\Model\Learn::class)->load($endtiy_id);
+        if(!student->getEndtity_id() && $endtiy_id){
+            
+        }
+    }
+
+
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+        <table name="students" resource="default" engine="innodb" comment="Post Table">
+        <column xsi:type="int" name="entity_id" padding="10" unsigned="true" nullable="false" identity="true" comment="Entity Id"/>
+        <column xsi:type="varchar" name="name"  length="255" nullable="true" comment="name student"/>
+        <column xsi:type="varchar" name="gender" nullable="true" comment="gender student"/>
+        <column xsi:type="date" name="dob" nullable="true" comment="dob student"/>
+        <column xsi:type="text" name="address"  nullable="true" comment="address student"/>
+        <column xsi:type="timestamp" name="created_at"  default="CURRENT_TIMESTAMP" comment="create"/>
+        <column xsi:type="timestamp" name="updated_at" on_update="true"  default="CURRENT_TIMESTAMP" comment="update"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+        <column name="entity_id"/>
+        </constraint> 
+   </table>
+</schema>
+
+
+
+
+StudentRepository.php
+
+
+<?php
+
+namespace Vnext\BasicTraining\Model;
+
+use Vnext\BasicTraining\Api\Data\StudentInterface;
+use Vnext\BasicTraining\Model\ResourceModel\Student\Collection;
+use Magento\Framework\Api\SearchCriteriaInterface;
+use Magento\Framework\Api\SortOrder;
+
+/**
+ * Class CustomManagement
+ * @package ViMagento\CustomApi\Model
+ */
+class StudentRepository implements \Vnext\BasicTraining\Api\StudentRepositoryInterface
+{
+    /**
+     * @var \Vnext\BasicTraining\Model\StudentFactory
+     */
+    protected $studentFactory;
+
+    /**
+     * @var ResourceModel\Student
+     */
+    protected $studentResource;
+
+    /**
+     * @var ResourceModel\Student\CollectionFactory
+     */
+    protected $collectionFactory;
+
+    /**
+     * @var \Vnext\BasicTraining\Api\Data\StudentSearchResultInterfaceFactory
+     */
+    protected $searchResultInterfaceFactory;
+
+    /**
+     * CustomRepository constructor.
+     * @param \Vnext\BasicTraining\Model\StudentFactory $studentFactory
+     * @param ResourceModel\Student $studentResource
+     * @param ResourceModel\Student\CollectionFactory $collectionFactory
+     * @param \Vnext\BasicTraining\Api\Data\StudentSearchResultInterfaceFactory $searchResultInterfaceFactory
+     */
+    public function __construct(
+        \Vnext\BasicTraining\Model\StudentFactory $studentFactory,
+        \Vnext\BasicTraining\Model\ResourceModel\Student $studentResource,
+        \Vnext\BasicTraining\Model\ResourceModel\Student\CollectionFactory $collectionFactory,
+        \Vnext\BasicTraining\Api\Data\StudentSearchResultInterfaceFactory $searchResultInterfaceFactory
+    ) {
+        $this->studentFactory = $studentFactory;
+        $this->studentResource = $studentResource;
+        $this->collectionFactory = $collectionFactory;
+        $this->searchResultInterfaceFactory = $searchResultInterfaceFactory;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getById($id)
+    {
+        $studentModel = $this->studentFactory->create();
+        $this->studentResource->load($studentModel, $id);
+        if (!$studentModel->getEntityId()) {
+            throw new NoSuchEntityException(__('Unable to find custom data with ID "%1"', $id));
+        }
+        return $studentModel;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function save(StudentInterface $vimagento)
+    {
+        $this->studentResource->save($vimagento);
+        return $vimagento;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function deleteById($id)
+    {
+        try {
+            $studentModel = $this->studentFactory->create();
+            $this->studentResource->load($studentModel, $id);
+            $this->studentResource->delete($studentModel);
+        } catch (\Exception $exception) {
+            throw new CouldNotDeleteException(
+                __('Could not delete the entry: %1', $exception->getMessage())
+            );
+        }
+
+        return true;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getList(SearchCriteriaInterface $searchCriteria)
+    {
+        $collection = $this->collectionFactory->create();
+
+        $this->addFiltersToCollection($searchCriteria, $collection);
+        $this->addSortOrdersToCollection($searchCriteria, $collection);
+        $this->addPagingToCollection($searchCriteria, $collection);
+
+        $collection->load();
+
+        return $this->buildSearchResult($searchCriteria, $collection);
+    }
+
+    /**
+     * @param SearchCriteriaInterface $searchCriteria
+     * @param Collection $collection
+     */
+    private function addFiltersToCollection(SearchCriteriaInterface $searchCriteria, Collection $collection)
+    {
+        foreach ($searchCriteria->getFilterGroups() as $filterGroup) {
+            $fields = $conditions = [];
+            foreach ($filterGroup->getFilters() as $filter) {
+                $fields[] = $filter->getField();
+                $conditions[] = [$filter->getConditionType() => $filter->getValue()];
+            }
+            $collection->addFieldToFilter($fields, $conditions);
+        }
+    }
+
+    /**
+     * @param SearchCriteriaInterface $searchCriteria
+     * @param Collection $collection
+     */
+    private function addSortOrdersToCollection(SearchCriteriaInterface $searchCriteria, Collection $collection)
+    {
+        foreach ((array)$searchCriteria->getSortOrders() as $sortOrder) {
+            $direction = $sortOrder->getDirection() == SortOrder::SORT_ASC ? 'asc' : 'desc';
+            $collection->addOrder($sortOrder->getField(), $direction);
+        }
+    }
+
+    /**
+     * @param SearchCriteriaInterface $searchCriteria
+     * @param Collection $collection
+     */
+    private function addPagingToCollection(SearchCriteriaInterface $searchCriteria, Collection $collection)
+    {
+        $collection->setPageSize($searchCriteria->getPageSize());
+        $collection->setCurPage($searchCriteria->getCurrentPage());
+    }
+
+    /**
+     * @param SearchCriteriaInterface $searchCriteria
+     * @param Collection $collection
+     * @return mixed
+     */
+    private function buildSearchResult(SearchCriteriaInterface $searchCriteria, Collection $collection)
+    {
+        $searchResults = $this->searchResultInterfaceFactory->create();
+
+        $searchResults->setSearchCriteria($searchCriteria);
+        $searchResults->setItems($collection->getItems());
+        $searchResults->setTotalCount($collection->getSize());
+
+        return $searchResults;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+StudentSearchResult.php
+
+
+<?php
+
+
+namespace Vnext\BasicTraining\Model;
+
+use Magento\Framework\Api\SearchResults;
+use Vnext\BasicTraining\Api\Data\StudentSearchResultInterface;
+
+/**
+ * Class CustomSearchResult
+ * @package ViMagento\CustomApi\Model
+ */
+class StudentSearchResult extends SearchResults implements StudentSearchResultInterface
+{
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+<?php
+namespace Vnext\BasicTraining\ViewModel;
+
+use Magento\Framework\View\Element\Block\ArgumentInterface;
+use Magento\Framework\Url\Helper\Data as UrlHelper;
+
+class Detail implements ArgumentInterface
+{
+    /**
+     * @var UrlHelper
+     */
+    private $urlHelper;
+
+    public function __construct(
+        UrlHelper $urlHelper,
+        \Vnext\BasicTraining\Model\StudentFactory $student_factory
+    )
+    {
+        $this->student_factory = $student_factory;
+        $this->urlHelper = $urlHelper;
+    }
+
+    public function getDetail()
+    {
+//        $student =$this->getRequest()->getParam('ids');
+        $result = $this->student_factory->create()->load(2);
+        return $result;
+    }
+}
+
+
+
+<listing xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd"> 
+    <argument name="data" xsi:type="array">
+        <item name="js_config" xsi:type="array">
+            <item name="provider" xsi:type="string">student_post_listing.student_post_listing_data_source</item>
+            <item name="deps" xsi:type="string">student_post_listing.student_post_listing_data_source</item>
+        </item>
+        <item name="spinner" xsi:type="string">spinner_columns</item>
+        <item name="buttons" xsi:type="array">
+            <item name="add" xsi:type="array">
+                <item name="name" xsi:type="string">add</item>
+                <item name="label" xsi:type="string" translate="true">Add New Post</item>
+                <item name="class" xsi:type="string">primary</item>
+                <item name="url" xsi:type="string">*/*/new</item>
+            </item>
+        </item>
+    </argument>
+    <dataSource name="nameOfDataSource">
+        <argument name="dataProvider" xsi:type="configurableObject">
+            <argument name="class" xsi:type="string">Magento\Framework\View\Element\UiComponent\DataProvider\DataProvider</argument>
+            <argument name="name" xsi:type="string">student_post_listing_data_source</argument>
+            <argument name="primaryFieldName" xsi:type="string">entity_id</argument>
+            <argument name="requestFieldName" xsi:type="string">id</argument>
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="component" xsi:type="string">Magento_Ui/js/grid/provider</item>
+                    <item name="update_url" xsi:type="url" path="mui/index/render"/>
+                    <item name="storageConfig" xsi:type="array">
+                        <item name="indexField" xsi:type="string">entity_id</item>
+                    </item>
+                </item>
+            </argument>
+        </argument>
+    </dataSource>
+
+ <listingToolbar name="listing_top">
+        <settings>
+            <sticky>true</sticky>
+        </settings>
+        <bookmark name="bookmarks"/>
+        <exportButton name="export_button"/>
+        <columnsControls name="columns_controls"/>
+        <filters name="listing_filters" />
+        <paging name="listing_paging"/>
+        <massaction name="listing_massaction">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="component" xsi:type="string">Magento_Ui/js/grid/tree-massactions</item>
+                </item>
+            </argument>
+            <action name="delete">
+                <argument name="data" xsi:type="array">
+                    <item name="config" xsi:type="array">
+                        <item name="type" xsi:type="string">delete</item>
+                        <item name="label" xsi:type="string" translate="true">Delete</item>
+                        <item name="url" xsi:type="url" path="*/*/delete"/>
+                        <item name="confirm" xsi:type="array">
+                            <item name="title" xsi:type="string" translate="true">Delete Row</item>
+                            <item name="message" xsi:type="string" translate="true">Are you sure you wan't to delete selected items?</item>
+                        </item>
+                    </item>
+                </argument>
+            </action>
+        </massaction>
+    </listingToolbar>
+
+    <columns name="spinner_columns">
+        <selectionsColumn name="ids">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="resizeEnabled" xsi:type="boolean">false</item>
+                    <item name="resizeDefaultWidth" xsi:type="string">55</item>
+                    <item name="indexField" xsi:type="string">entity_id</item>
+                </item>
+            </argument>
+        </selectionsColumn>
+
+        <column name="entity_id">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="filter" xsi:type="string">textRange</item>
+                    <item name="sorting" xsi:type="string">asc</item>
+                    <item name="label" xsi:type="string" translate="true">ID</item>
+                </item>
+            </argument>
+        </column>
+
+        <column name="name">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="filter" xsi:type="string">text</item>
+                    <item name="editor" xsi:type="array">
+                        <item name="editorType" xsi:type="string">text</item>
+                        <item name="validation" xsi:type="array">
+                            <item name="required-entry" xsi:type="boolean">true</item>
+                        </item>
+                    </item>
+                    <item name="label" xsi:type="string" translate="true">Name</item>
+                </item>
+            </argument>
+        
+        </column>
+          <column name="gender">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="filter" xsi:type="string">text</item>
+                    <item name="editor" xsi:type="array">
+                        <item name="editorType" xsi:type="string">text</item>
+                        <item name="validation" xsi:type="array">
+                            <item name="required-entry" xsi:type="boolean">true</item>
+                        </item>
+                    </item>
+                    <item name="label" xsi:type="string" translate="true">gender</item>
+                </item>
+            </argument>
+        </column>
+        
+       
+          <column name="dob">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="filter" xsi:type="string">text</item>
+                    <item name="editor" xsi:type="array">
+                        <item name="editorType" xsi:type="string">text</item>
+                        <item name="validation" xsi:type="array">
+                            <item name="required-entry" xsi:type="boolean">true</item>
+                        </item>
+                    </item>
+                    <item name="label" xsi:type="string" translate="true">Dob</item>
+                </item>
+            </argument>
+        </column>
+
+      
+          <column name="address">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="filter" xsi:type="string">text</item>
+                    <item name="editor" xsi:type="array">
+                        <item name="editorType" xsi:type="string">text</item>
+                        <item name="validation" xsi:type="array">
+                            <item name="required-entry" xsi:type="boolean">true</item>
+                        </item>
+                    </item>
+                    <item name="label" xsi:type="string" translate="true">Address</item>
+                </item>
+            </argument>
+        </column>
+
+       
+          <column name="slug">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="filter" xsi:type="string">text</item>
+                    <item name="editor" xsi:type="array">
+                        <item name="editorType" xsi:type="string">text</item>
+                        <item name="validation" xsi:type="array">
+                            <item name="required-entry" xsi:type="boolean">true</item>
+                        </item>
+                    </item>
+                    <item name="label" xsi:type="string" translate="true">Slug</item>
+                </item>
+            </argument>
+        </column>
+
+      
+          <column name="email">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="filter" xsi:type="string">text</item>
+                    <item name="editor" xsi:type="array">
+                        <item name="editorType" xsi:type="string">text</item>
+                        <item name="validation" xsi:type="array">
+                            <item name="required-entry" xsi:type="boolean">true</item>
+                        </item>
+                    </item>
+                    <item name="label" xsi:type="string" translate="true">Email</item>
+                </item>
+            </argument>
+        </column>
+
+        <column name="created_at" class="Magento\Ui\Component\Listing\Columns\Date">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="filter" xsi:type="string">dateRange</item>
+                    <item name="component" xsi:type="string">Magento_Ui/js/grid/columns/date</item>
+                    <item name="dataType" xsi:type="string">date</item>
+                    <item name="label" xsi:type="string" translate="true">Created</item>
+                </item>
+            </argument>
+        </column>
+
+        <column name="updated_at" class="Magento\Ui\Component\Listing\Columns\Date">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="filter" xsi:type="string">dateRange</item>
+                    <item name="component" xsi:type="string">Magento_Ui/js/grid/columns/date</item>
+                    <item name="dataType" xsi:type="string">date</item>
+                    <item name="label" xsi:type="string" translate="true">Updated</item>
+                </item>
+            </argument>
+        </column>
+    </columns>
+</listing>
